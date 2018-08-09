@@ -13,16 +13,21 @@ SCRIPT_DIR="/home/${USER}/git/tf-benchmarks-ref/scripts/tf_cnn_benchmarks"
 DATA_NAME=imagenet
 
 MODELS=(
-  inception3
   resnet50
+  resnet101
   resnet152
-  alexnet
+  inception3
+  inception4
   vgg16
+  alexnet
 )
+
 
 CPU_NAMES=(
   E5-2620
-  i7-7820
+  i7-7820X
+  W-2133
+  E5-1650
 )
 
 VARIABLE_UPDATE=(
@@ -36,11 +41,13 @@ DATA_MODE=(
 )
 
 declare -A BATCH_SIZES=(
-  [inception3]=64
   [resnet50]=64
+  [resnet101]=64
   [resnet152]=32
-  [alexnet]=512
+  [inception3]=64
+  [inception4]=16
   [vgg16]=64
+  [alexnet]=512
 )
 
 MIN_NUM_GPU=4

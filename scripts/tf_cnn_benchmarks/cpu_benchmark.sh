@@ -11,7 +11,7 @@ ITERATIONS=2
 NUM_BATCHES=20
 
 DATA_DIR="/home/${USER}/data/imagenet_mini"
-SCRIPT_DIR="/home/${USER}/git/tf-benchmarks-ref/scripts/tf_cnn_benchmarks"
+SCRIPT_DIR="/home/${USER}/tf-benchmarks-ref/scripts/tf_cnn_benchmarks"
 LOG_DIR="/home/${USER}/imagenet_benchmark_logs/${CPU_NAME}"
 
 MODELS=(

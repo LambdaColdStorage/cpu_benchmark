@@ -74,19 +74,24 @@ run_benchmark() {
     args+=("--data_dir=$DATA_DIR")
   fi
   if $use_nccl; then
-    args+=("--use_nccl")
+    args+=("--use_nccl=True")
     output+="-nccl"
+  else
+    args+=("--use_nccl=False")
   fi
 
   if $distortions; then
+    args+=("--distortions=True")
     output+="-distortions"
+  else
+     args+=("--distortions=False")
   fi
   output+="-${num_gpus}gpus-${batch_size}-${iter}.log"
 
   mkdir -p "${LOG_DIR}" || true
   
-  echo $output
-
+  # echo $output
+  # echo ${args[@]}
   python tf_cnn_benchmarks.py "${args[@]}" |& tee "$output"
 }
 

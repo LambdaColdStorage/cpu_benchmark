@@ -8,7 +8,7 @@ fi
 echo $CPU_NAME
 
 ITERATIONS=2
-NUM_BATCHES=20
+NUM_BATCHES=100
 
 DATA_DIR="/home/${USER}/data/imagenet_mini"
 SCRIPT_DIR="/home/${USER}/tf-benchmarks-ref/scripts/tf_cnn_benchmarks"

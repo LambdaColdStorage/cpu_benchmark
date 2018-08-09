@@ -5,7 +5,6 @@ SUMMARY_NAME="/home/${USER}/imagenet_benchmark_logs/summary.md"
 CPU_NAME="$(lscpu | grep "Model name:" | sed -r 's/Model name:\s{1,}//g' | awk '{ print $4 }')";
 
 ITERATIONS=2
-NUM_BATCHES=10
 
 DATA_DIR="/home/${USER}/data/imagenet_mini"
 SCRIPT_DIR="/home/${USER}/git/tf-benchmarks-ref/scripts/tf_cnn_benchmarks"

@@ -14,19 +14,12 @@ DATA_DIR="/home/${USER}/data/imagenet_mini"
 SCRIPT_DIR="/home/${USER}/git/tf-benchmarks-ref/scripts/tf_cnn_benchmarks"
 LOG_DIR="/home/${USER}/imagenet_benchmark_logs/${CPU_NAME}"
 
-DATA_NAME=imagenet
-
 MODELS=(
   inception3
   resnet50
   resnet152
   alexnet
   vgg16
-)
-
-CPU_NAMES=(
-  E5-2620
-  i7-7820
 )
 
 VARIABLE_UPDATE=(
@@ -102,16 +95,10 @@ run_benchmark_all() {
 
   for model in "${MODELS[@]}"; do
     local batch_size=${BATCH_SIZES[$model]}
-    for cpu_name in "${CPU_NAMES[@]}"; do
-
-      if [ $cpu_name = $CPU_NAME ]; then
-        for num_gpu in `seq ${MAX_NUM_GPU} -1 ${MIN_NUM_GPU}`; do 
-          for iter in $(seq 1 $ITERATIONS); do
-            run_benchmark "$model" $batch_size $cpu_name $num_gpu $iter $data_mode $variable_update $use_nccl $distortions
-          done
-        done
-      fi
-
+    for num_gpu in `seq ${MAX_NUM_GPU} -1 ${MIN_NUM_GPU}`; do 
+      for iter in $(seq 1 $ITERATIONS); do
+        run_benchmark "$model" $batch_size $CPU_NAME $num_gpu $iter $data_mode $variable_update $use_nccl $distortions
+      done
     done
   done  
 }

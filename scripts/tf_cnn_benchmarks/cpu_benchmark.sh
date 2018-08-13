@@ -92,6 +92,7 @@ run_benchmark() {
   
   # echo $output
   # echo ${args[@]}
+  # unbuffer python tf_cnn_benchmarks.py "${args[@]}" |& tee "$output"
   unbuffer python tf_cnn_benchmarks.py "${args[@]}" |& tee "$output"
 }
 

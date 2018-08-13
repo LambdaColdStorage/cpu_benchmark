@@ -59,7 +59,6 @@ run_benchmark() {
   local use_nccl=$8
   local distortions=$9
 
-  pushd "$SCRIPT_DIR" &> /dev/null
   local args=()
   local output="${LOG_DIR}/${model}-${data_mode}-${variable_update}"
 
@@ -94,7 +93,6 @@ run_benchmark() {
   # echo $output
   # echo ${args[@]}
   unbuffer python tf_cnn_benchmarks.py "${args[@]}" |& tee "$output"
-  popd &> /dev/null
 }
 
 run_benchmark_all() {

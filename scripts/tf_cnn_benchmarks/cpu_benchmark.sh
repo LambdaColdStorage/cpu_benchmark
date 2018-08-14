@@ -11,7 +11,7 @@ ITERATIONS=2
 NUM_BATCHES=100
 
 DATA_DIR="/home/${USER}/data/imagenet_mini"
-SCRIPT_DIR="/home/${USER}/tf-benchmarks-ref/scripts/tf_cnn_benchmarks"
+SCRIPT_DIR="/home/${USER}/cpu_benchmark/scripts/tf_cnn_benchmarks"
 LOG_DIR="/home/${USER}/imagenet_benchmark_logs/${CPU_NAME}"
 
 MODELS=(
@@ -59,6 +59,7 @@ run_benchmark() {
   local use_nccl=$8
   local distortions=$9
 
+  pushd "$SCRIPT_DIR" &> /dev/null
   local args=()
   local output="${LOG_DIR}/${model}-${data_mode}-${variable_update}"
 
@@ -91,9 +92,9 @@ run_benchmark() {
   mkdir -p "${LOG_DIR}" || true
   
   # echo $output
-  # echo ${args[@]}
-  # unbuffer python tf_cnn_benchmarks.py "${args[@]}" |& tee "$output"
+  echo ${args[@]}
   unbuffer python tf_cnn_benchmarks.py "${args[@]}" |& tee "$output"
+  popd &> /dev/null
 }
 
 run_benchmark_all() {

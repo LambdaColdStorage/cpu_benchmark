@@ -56,8 +56,7 @@ run_benchmark() {
   local iter=$5
   local data_mode=$6
   local update_mode=$7
-  local use_nccl=$8
-  local distortions=$9
+  local distortions=$8
 
   pushd "$SCRIPT_DIR" &> /dev/null
   local args=()
@@ -74,13 +73,6 @@ run_benchmark() {
   if [ $data_mode = real ]; then
     args+=("--data_dir=$DATA_DIR")
   fi
-  if $use_nccl; then
-    args+=("--use_nccl=True")
-    output+="-nccl"
-  else
-    args+=("--use_nccl=False")
-  fi
-
   if $distortions; then
     args+=("--distortions=True")
     output+="-distortions"
@@ -100,39 +92,31 @@ run_benchmark() {
 run_benchmark_all() {
   local data_mode="$1" 
   local variable_update="$2"
-  local use_nccl="$3"
-  local distortions="$4"
+  local distortions="$3"
 
   for model in "${MODELS[@]}"; do
     local batch_size=${BATCH_SIZES[$model]}
     for num_gpu in `seq ${MAX_NUM_GPU} -1 ${MIN_NUM_GPU}`; do 
       for iter in $(seq 1 $ITERATIONS); do
-        run_benchmark "$model" $batch_size $CPU_NAME $num_gpu $iter $data_mode $variable_update $use_nccl $distortions
+        run_benchmark "$model" $batch_size $CPU_NAME $num_gpu $iter $data_mode $variable_update $distortions
       done
     done
   done  
 }
 
 main() {
-  local data_mode variable_update distortion_mode model num_gpu iter benchmark_name use_nccl distortions
+  local data_mode variable_update distortion_mode model num_gpu iter benchmark_name distortions
   local cpu_line table_line
 
   for data_mode in "${DATA_MODE[@]}"; do
     for variable_update in "${VARIABLE_UPDATE[@]}"; do
-      for use_nccl in true false; do
-        for distortions in true false; do
-          if [ $variable_update = parameter_server ] && $use_nccl ; then
-            # skip nccl for parameter_server
-            :
-          else
-            if [ $data_mode = syn ] && $distortions ; then
-              # skip distortion for synthetic data
-              :
-            else
-              run_benchmark_all $data_mode $variable_update $use_nccl $distortions
-            fi
-          fi
-        done
+      for distortions in true false; do
+        if [ $data_mode = syn ] && $distortions ; then
+          # skip distortion for synthetic data
+          :
+        else
+          run_benchmark_all $data_mode $variable_update $distortions
+        fi
       done
     done
   done

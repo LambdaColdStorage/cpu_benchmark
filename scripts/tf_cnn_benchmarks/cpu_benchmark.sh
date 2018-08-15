@@ -74,10 +74,7 @@ run_benchmark() {
     args+=("--data_dir=$DATA_DIR")
   fi
   if $distortions; then
-    args+=("--distortions=True")
     output+="-distortions"
-  else
-     args+=("--distortions=False")
   fi
   output+="-${num_gpus}gpus-${batch_size}-${iter}.log"
 

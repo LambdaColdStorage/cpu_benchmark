@@ -3010,6 +3010,9 @@ def setup(params):
       # num_monitoring_threads = 2 * params.num_gpus
       num_monitoring_threads = 0
 
+      # print(cpu_count)
+      # print(total_gpu_thread_count)
+      # print(num_monitoring_threads)
       num_private_threads = max(
           cpu_count - total_gpu_thread_count - num_monitoring_threads, 1)
       params = params._replace(datasets_num_private_threads=num_private_threads)

@@ -60,14 +60,9 @@ get_benchmark_name() {
   local num_gpus=$1
   local data_mode=$2
   local variable_update=$3
-  local use_nccl=$4
-  local distortions=$5
+  local distortions=$4
 
   local benchmark_name="${data_mode}-${variable_update}"
-
-  if $use_nccl; then
-    benchmark_name+="-nccl"
-  fi
 
   if $distortions; then
     benchmark_name+="-distortions"
@@ -84,14 +79,9 @@ run_report() {
   local iter=$5
   local data_mode=$6
   local variable_update=$7
-  local use_nccl=$8
-  local distortions=$9
+  local distortions=$8
 
   local output="${LOG_DIR}/${model}-${data_mode}-${variable_update}"
-
-  if $use_nccl; then
-    output+="-nccl"
-  fi
 
   if $distortions; then
     output+="-distortions"
@@ -109,7 +99,7 @@ run_report() {
 }
 
 main() {
-  local data_mode variable_update distortion_mode model num_gpus iter benchmark_name use_nccl distortions
+  local data_mode variable_update distortion_mode model num_gpus iter benchmark_name distortions
   local cpu_line table_line
   echo "SUMMARY" > $SUMMARY_NAME
   echo "===" >> $SUMMARY_NAME
@@ -133,47 +123,41 @@ main() {
   for num_gpus in `seq ${MAX_NUM_GPU} -1 ${MIN_NUM_GPU}`; do 
     for data_mode in "${DATA_MODE[@]}"; do
       for variable_update in "${VARIABLE_UPDATE[@]}"; do
-        for use_nccl in true false; do
-          for distortions in true false; do
-            if [ $variable_update = parameter_server ] && $use_nccl ; then
-              # skip nccl for parameter_server
-              :
-            else
-              if [ $data_mode = syn ] && $distortions ; then
-                # skip distortion for synthetic data
-                :
-              else
-                benchmark_name=$(get_benchmark_name $num_gpus $data_mode $variable_update $use_nccl $distortions)
+        for distortions in true false; do
+
+          if [ $data_mode = syn ] && $distortions ; then
+            # skip distortion for synthetic data
+            :
+          else
+            benchmark_name=$(get_benchmark_name $num_gpus $data_mode $variable_update $distortions)
+          
+            echo $'\n' >> $SUMMARY_NAME
+            echo "**${benchmark_name}**"$'\n' >> $SUMMARY_NAME
+            echo "${cpu_line}" >> $SUMMARY_NAME
+            echo "${table_line}" >> $SUMMARY_NAME
+                
+            for model in "${MODELS[@]}"; do
+              local batch_size=${BATCH_SIZES[$model]}
+              result_line="${model} |"
+              for cpu_name in "${CPU_NAMES[@]}"; do
+
+                LOG_DIR="/home/${USER}/imagenet_benchmark_logs/${cpu_name}"
+
+                result=0
+
+                for iter in $(seq 1 $ITERATIONS); do
+                  image_per_sec=$(run_report "$model" $batch_size $cpu_name $num_gpus $iter $data_mode $variable_update $distortions)
+                  result=$(echo "$result + $image_per_sec" | bc -l)
+                done
+                result=$(echo "scale=2; $result / $ITERATIONS" | bc -l)
+                result_line+="${result} |"
+
+              done
               
-                echo $'\n' >> $SUMMARY_NAME
-                echo "**${benchmark_name}**"$'\n' >> $SUMMARY_NAME
-                echo "${cpu_line}" >> $SUMMARY_NAME
-                echo "${table_line}" >> $SUMMARY_NAME
-                    
-                for model in "${MODELS[@]}"; do
-                  local batch_size=${BATCH_SIZES[$model]}
-                  result_line="${model} |"
-                  for cpu_name in "${CPU_NAMES[@]}"; do
+              echo "${result_line}" >> $SUMMARY_NAME
+            done 
+          fi
 
-                    LOG_DIR="/home/${USER}/imagenet_benchmark_logs/${cpu_name}"
-
-                    result=0
-
-                    for iter in $(seq 1 $ITERATIONS); do
-                      image_per_sec=$(run_report "$model" $batch_size $cpu_name $num_gpus $iter $data_mode $variable_update $use_nccl $distortions)
-                      result=$(echo "$result + $image_per_sec" | bc -l)
-                    done
-                    result=$(echo "scale=2; $result / $ITERATIONS" | bc -l)
-                    result_line+="${result} |"
-
-                  done
-                  
-                  echo "${result_line}" >> $SUMMARY_NAME
-                done 
-
-              fi
-            fi
-          done
         done
       done
     done

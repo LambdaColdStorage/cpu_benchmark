@@ -12,7 +12,7 @@ Notice:
 * Alexnet (large parameter, low computation) causes significant bottleneck in real images training across all CPUs. Not be able to reproduce TF's reference Alexnet results on training real images. (```7900x``` is reasonablly close without distortions)
 * Threadripper causes undeterministic segfault. For the successful runs it is on par with ```i7-7820X```
 * xeon CPUs has some issues with intensive pre-processing (extremely poor performance on Alexnet)
-* ```E5-2686``` is tested with 4 P100 GPUs (AWS P3.8xlarger instance)
+* ```E5-2686``` is tested with 4 V100 GPUs (AWS P3.8xlarger instance)
 * all_reduce_spec is not fully tested (needs NCCL2). 
 
 __Instructions__

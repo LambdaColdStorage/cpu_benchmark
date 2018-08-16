@@ -8,11 +8,12 @@ __Configuration__
 
 Notice: 
 
-* The default calculation of params.datasets_num_private_threads is problematic. When CPU has few cores it is going to be set to 1 and severely affect the speed. As a hack solution set num_monitoring_threads=0 in benchmark_cnn.py.
-* The E5-2686 CPU is tested with AWS P3.8xlarger instance (4 P100 GPUs)
-* Alexnet causes significant GPU bottleneck on all CPUs. Not be able to reproduce TF's official Alexnet results on real images. (7900x is reasonablly close without distortions)
-* Threadripper causes undeterministic segfault. For the successful runs it is on par with 
+* The default calculation of ```params.datasets_num_private_threads``` is problematic: when CPU has few cores ```datasets_num_private_threads``` can be set to 1 and this severely affects the speed. As a hacked-up solution we set ```num_monitoring_threads=0``` in benchmark_cnn.py, so ```datasets_num_private_threads = num_cpu_thread - 2 * num_gpus```.
+* Alexnet (large parameter, low computation) causes significant bottleneck in real images training across all CPUs. Not be able to reproduce TF's reference Alexnet results on training real images. (```7900x``` is reasonablly close without distortions)
+* Threadripper causes undeterministic segfault. For the successful runs it is on par with ```i7-7820X```
 * xeon CPUs has some issues with intensive pre-processing (extremely poor performance on Alexnet)
+* ```E5-2686``` is tested with 4 P100 GPUs (AWS P3.8xlarger instance)
+* all_reduce_spec is not fully tested (needs NCCL2). 
 
 __Instructions__
 

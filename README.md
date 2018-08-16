@@ -1,5 +1,33 @@
-SUMMARY
+CPU Benchmark
 ===
+
+__Configuration__
+
+* tf-nightly-gpu (20180814)
+* Benchmark code: Based on TF's [benchmarks](https://github.com/tensorflow/benchmarks) (GitHub hash 8f95262).
+
+Notice: 
+
+* The default calculation of params.datasets_num_private_threads is problematic. When CPU has few cores it is going to be set to 1 and severely affect the speed. As a hack solution set num_monitoring_threads=0 in benchmark_cnn.py.
+* The E5-2686 CPU is tested with AWS P3.8xlarger instance (4 P100 GPUs)
+* Alexnet causes significant GPU bottleneck on all CPUs. Not be able to reproduce TF's official Alexnet results on real images. (7900x is reasonablly close without distortions)
+* Threadripper causes undeterministic segfault. For the successful runs it is on par with 
+* xeon CPUs has some issues with intensive pre-processing (extremely poor performance on Alexnet)
+
+__Instructions__
+
+Prepare Imagenet data. Here is a [link](https://drive.google.com/open?id=1JzF24uUa7D9fFeETrnNYMMMZ-9yNC0I5) to download a fraction of imagenet. Download and unzip it into ```~/data/imagenet_mini```
+
+```
+cd scripts/tf_cnn_benchmarks
+./cpu_benchmark.sh
+./cpu_report.sh
+```
+
+The results will be saved as ```summary.md```.
+
+__Results__
+
 | model | input size | param mem | feat. mem | flops | performance |
 |-------|------------|--------------|----------------|-------|-------------|
 | [resnet-50](reports/resnet-50.md) | 224 x 224 | 98 MB | 103 MB | 4 BFLOPs | 24.60 / 7.70 |

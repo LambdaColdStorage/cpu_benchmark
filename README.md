@@ -4,6 +4,7 @@ CPU Benchmark
 __Configuration__
 
 * tf-nightly-gpu (20180814)
+  - pip install tf-nightly-gpu==1.11.0.dev20180814
 * Benchmark code: Based on TF's [benchmarks](https://github.com/tensorflow/benchmarks) (GitHub hash 8f95262).
 
 Notice: 

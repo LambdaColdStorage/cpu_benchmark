@@ -26,7 +26,6 @@ MODELS=(
 
 VARIABLE_UPDATE=(
   parameter_server
-  replicated
 )
 
 DATA_MODE=(
@@ -44,8 +43,8 @@ declare -A BATCH_SIZES=(
   [alexnet]=512
 )
 
-MIN_NUM_GPU=4
-MAX_NUM_GPU=4
+MIN_NUM_GPU=1
+MAX_NUM_GPU=1
 
 run_benchmark() {
 

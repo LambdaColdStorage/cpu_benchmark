@@ -7,7 +7,7 @@ if [ $CPU_NAME = "CPU" ]; then
 fi
 echo $CPU_NAME
 
-ITERATIONS=2
+ITERATIONS=3
 NUM_BATCHES=100
 
 DATA_DIR="/home/${USER}/data/imagenet_mini"
@@ -92,7 +92,7 @@ run_benchmark() {
   
   # echo $output
   echo ${args[@]}
-  unbuffer python tf_cnn_benchmarks.py "${args[@]}" |& tee "$output"
+  python tf_cnn_benchmarks.py "${args[@]}" |& tee "$output"
   popd &> /dev/null
 }
 

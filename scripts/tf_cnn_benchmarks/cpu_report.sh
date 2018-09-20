@@ -4,10 +4,9 @@ SUMMARY_NAME="../../summary.md"
 
 CPU_NAME="$(lscpu | grep "Model name:" | sed -r 's/Model name:\s{1,}//g' | awk '{ print $4 }')";
 
-ITERATIONS=2
+ITERATIONS=3
 
 DATA_DIR="/home/${USER}/data/imagenet_mini"
-SCRIPT_DIR="/home/${USER}/git/tf-benchmarks-ref/scripts/tf_cnn_benchmarks"
 
 
 DATA_NAME=imagenet
@@ -24,16 +23,11 @@ MODELS=(
 
 
 CPU_NAMES=(
-  i7-7820X
-  W-2133
-  E5-1650
-  1950X
-  i9-7900X
+  $CPU_NAME
 )
 
 VARIABLE_UPDATE=(
   parameter_server
-  replicated
 )
 
 DATA_MODE=(
@@ -51,8 +45,8 @@ declare -A BATCH_SIZES=(
   [alexnet]=512
 )
 
-MIN_NUM_GPU=4
-MAX_NUM_GPU=4
+MIN_NUM_GPU=1
+MAX_NUM_GPU=1
 
 
 get_benchmark_name() {

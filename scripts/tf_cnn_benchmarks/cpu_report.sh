@@ -3,6 +3,11 @@
 SUMMARY_NAME="../../summary.md"
 
 CPU_NAME="$(lscpu | grep "Model name:" | sed -r 's/Model name:\s{1,}//g' | awk '{ print $4 }')";
+if [ $CPU_NAME = "CPU" ]; then
+  # CPU can show up at different locations
+  CPU_NAME="$(lscpu | grep "Model name:" | sed -r 's/Model name:\s{1,}//g' | awk '{ print $3 }')";
+fi
+echo $CPU_NAME
 
 ITERATIONS=3
 
